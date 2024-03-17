@@ -1,6 +1,7 @@
 from pwn import xor
 with open('output.txt', 'rb') as f:
     flag = f.read()
+
 a = flag[0:len(flag) // 3]
 b = flag[len(flag) // 3:2 * len(flag) // 3]
 c = flag[2 * len(flag) // 3:]
@@ -22,3 +23,4 @@ enc = a + b + c
 with open('flag.txt', 'wb') as f:
     f.write(enc)
 
+# it is literally writing the code in the reverse order (bottom up)
