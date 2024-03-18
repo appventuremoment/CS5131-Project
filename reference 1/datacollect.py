@@ -4,7 +4,7 @@ import os
 video=cv2.VideoCapture(0)
 
 # For this, copy the absolute path and replace it with your own
-facedetect=cv2.CascadeClassifier('C:/Users/user/Documents/GitHub/CS5131-Project/reference 1/haarcascade_frontalface_default.xml')
+facedetect=cv2.CascadeClassifier('reference 1/haarcascade_frontalface_default.xml')
 
 if facedetect.empty():
     print("Error: Cascade Classifier not loaded")
@@ -37,7 +37,7 @@ while True:
 		cv2.rectangle(frame, (x,y), (x+w, y+h), (0,255,0), 3)
 	cv2.imshow("WindowFrame", frame)
 	cv2.waitKey(1)
-	if count>50:
+	if count>150:
 		break
 video.release()
 cv2.destroyAllWindows()

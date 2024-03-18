@@ -10,9 +10,4 @@ At the end of the project we should have chosen either of the models for the fac
 For models:
 https://www.kaggle.com/code/mishki/face-recognition-keras-facenet-inception-model
 
-https://www.youtube.com/watch?v=N_W4EYtsa10
 https://www.youtube.com/watch?v=lH01BgsIPuE
-
-
-- Implement model
-- Make it wait for 1.5s before returning person name
