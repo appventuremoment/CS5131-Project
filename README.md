@@ -19,3 +19,4 @@ Currently we have 3 options for our model:
 1. Ram head against wall until we find our model (bruteforce with no refernce)
 2. Try it with metric learning
 3. Attempt to implement the model from the kaggle link
+4. Use teachable machine to compare
