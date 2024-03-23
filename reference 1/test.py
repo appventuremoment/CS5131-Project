@@ -4,6 +4,10 @@ import numpy as np
 import cv2
 from keras.models import load_model
 import numpy as np
+from keras import *
+from tensorflow.keras.applications import mobilenet_v2
+from tensorflow.keras.applications.mobilenet_v2 import MobileNetV2
+
 
 
 facedetect = cv2.CascadeClassifier('reference 1/haarcascade_frontalface_default.xml')
@@ -13,10 +17,6 @@ cap.set(3, 640)
 cap.set(4, 480)
 font=cv2.FONT_HERSHEY_COMPLEX
 
-from tensorflow import keras
-from keras import *
-from tensorflow.keras.applications import mobilenet_v2
-from tensorflow.keras.applications.mobilenet_v2 import MobileNetV2
 
 target_size = (224, 224)
 
