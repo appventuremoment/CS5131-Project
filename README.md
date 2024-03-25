@@ -16,3 +16,5 @@ Execution:
 For models:
 https://www.youtube.com/watch?v=lH01BgsIPuE
 https://www.kaggle.com/code/amankumarmallik/one-shot-learning-for-face-verification
+
+gyat
