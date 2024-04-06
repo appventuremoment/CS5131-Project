@@ -2,25 +2,17 @@ import tensorflow as tf
 from tensorflow import keras
 import numpy as np
 import cv2
-from keras.models import load_model
-import numpy as np
 import random
 import os
 from keras import *
-from keras.layers import Conv2D, Activation, AveragePooling2D, MaxPooling2D, ZeroPadding2D, Input, concatenate
-from keras.layers.core import Lambda, Dense, Flatten
-from numpy import genfromtxt
-from keras.layers.normalization import BatchNormalization
-from keras import backend as K
 from keras.layers import *
+from keras import backend as K
 from keras.models import Model
-from sklearn.preprocessing import normalize
 K.set_image_data_format('channels_first')
-import matplotlib.pyplot as plt
-from keras.utils import plot_model
-import sys
 
-facedetect = cv2.CascadeClassifier('reference 1/haarcascade_frontalface_default.xml')
+
+
+facedetect = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 # Get the current directory of the script
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -28,8 +20,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 relative_path = 'images/train'
 
 # Construct the full path using os.path.join()
-full_path = os.path.join(current_dir, relative_path)
-p = full_path
+p = os.path.join(current_dir, relative_path)
 
 def localize_resize(path_image,facedetect):
     image=cv2.imread(path_image)
@@ -37,7 +28,7 @@ def localize_resize(path_image,facedetect):
     gray=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
     classifier= facedetect
     faces=classifier.detectMultiScale(gray,1.1,6)
-    if len(faces) != 1:#condition if we dont have any faces or cant be detected y haar cascade we will skip those
+    if len(faces) != 1: #condition if we dont have any faces or cant be detected y haar cascade we will skip those
         return -1
     
     x,y,w,h=faces.squeeze()
@@ -56,8 +47,6 @@ def data_gen(batch_size=32):
         
 
         while(i<batch_size):
-            # r=random.choice(os.listdir(PATH))
-            # p=PATH+'/'+ r
             id=os.listdir(p)
             ra=random.sample(id,2)
             pos_dir=p+'/'+ra[0]
@@ -66,23 +55,18 @@ def data_gen(batch_size=32):
             anc=pos_dir+'/'+random.choice([x for x in os.listdir(pos_dir) if 'script' in x])
             neg=neg_dir+'/'+random.choice(os.listdir(neg_dir))
             pos_img=localize_resize(pos,facedetect)
-                    #print(pos+anc+neg)
-            if pos_img is -1:
+            if pos_img == -1:
                 continue
             neg_img=localize_resize(neg,facedetect)
-            if neg_img is -1:
+            if neg_img == -1:
                 continue
             anc_img=localize_resize(anc,facedetect)
-            if anc_img is -1:
+            if anc_img == -1:
                 continue
             positive.append(list(pos_img))
-                #print('positive{0}'.format(i))
             negative.append(list(neg_img))
-                #print('negative{0}'.format(i))
             anchor.append(list(anc_img))
-                #print('anchor{0}'.format(i))
             i=i+1
-        #return anchor,positive,negative
         yield ([np.array(anchor),np.array(positive),np.array(negative)],np.zeros((batch_size,1)).astype("float32"))
 
 def inception_block_1a(X):
@@ -267,7 +251,6 @@ def inception_block_3b(X):
     inception=concatenate([X_3,X_P,X_1],axis=1)
     return inception
 
-
 def FinalModel(input_shape):
     
     X_input=Input(input_shape)
@@ -314,7 +297,6 @@ def FinalModel(input_shape):
 model=FinalModel(input_shape=(3,96,96))
 
 def triplet_loss_t(y_true,y_pred):
-    #print(y_pred)
     anchor=y_pred[:,0:128]
     pos=y_pred[:,128:256]
     neg=y_pred[:,256:384]
@@ -322,25 +304,8 @@ def triplet_loss_t(y_true,y_pred):
     positive_distance = K.sum(K.abs(anchor-pos), axis=1)
     negative_distance = K.sum(K.abs(anchor-neg), axis=1)
     probs=K.softmax([positive_distance,negative_distance],axis=0)
-    #loss = positive_distance - negative_distance+alpha
     loss=K.mean(K.abs(probs[0])+K.abs(1.0-probs[1]))
     return loss
-
-def localize_resize(path_image,path_haar='../input/haar-cascade/haarcascade_frontalface_default.xml'):
-    image=cv2.imread(path_image)
-    
-    gray=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
-    classifier=cv2.CascadeClassifier(path_haar)
-    faces=classifier.detectMultiScale(gray,1.1,6)
-    if len(faces) != 1:#condition if we dont have any faces or cant be detected y haar cascade we will skip those
-        return -1
-    
-    x,y,w,h=faces.squeeze()
-    crop=image[y:y+h,x:x+w]
-    image=cv2.resize(crop,(96,96))
-    image=np.transpose(image,(2,0,1))
-    image=image.astype('float32')/255.0
-    return image
 
 triplet_model_a=Input((3,96,96))
 triplet_model_n=Input((3,96,96))

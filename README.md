@@ -16,3 +16,22 @@ Execution:
 For models:
 https://www.youtube.com/watch?v=lH01BgsIPuE
 https://www.kaggle.com/code/amankumarmallik/one-shot-learning-for-face-verification
+
+
+Train the models in each section
+in the comaparing section give 2 code blocks to test using the camera
+
+compare the accuracy, precision and actually using the camera
+
+
+```py
+from keras import backend as K
+
+def custom_precision(y_true, y_pred):
+    true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
+    predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
+    precision = true_positives / (predicted_positives + K.epsilon())
+    return precision
+
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy',custom_precision])
+```
