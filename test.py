@@ -315,18 +315,4 @@ triplet_model=Model([triplet_model_a,triplet_model_p,triplet_model_n],triplet_mo
 triplet_model.compile(optimizer='adam',loss=triplet_loss_t)
 triplet_model.summary()
 
-import tensorflow as tf
-
-# Define your input tensor
-input_tensor = tf.constant([[1, 2, 3, 4],
-                            [6, 7, 8, 9]])
-
-# Split the input tensor into three tensors along the second dimension (axis=1)
-split_tensors = tf.split(input_tensor, num_or_size_splits=2, axis=0)
-
-# Print the resulting tensors
-for i, tensor in enumerate(split_tensors):
-    print(f"Tensor {i + 1}:")
-    print(tensor)
-
 

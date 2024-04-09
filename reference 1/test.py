@@ -2,7 +2,6 @@ import tensorflow as tf
 from tensorflow import keras
 import numpy as np
 import cv2
-import os
 from keras.models import load_model
 import numpy as np
 from keras import *
@@ -42,12 +41,15 @@ transfer_mobile_model.compile(optimizer=tf.optimizers.Adam(),
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
-transferhistory = transfer_mobile_model.fit(train, validation_data=val, epochs=5)
+transferhistory = transfer_mobile_model.fit(train, validation_data=val, epochs=10)
 
+
+
+# model = load_model('reference 1/keras_model.h5')
+model = transfer_mobile_model
+
+   
 count = 0
-labels = next(os.walk("images/train"))[1]
-detected = None
-
 while True:
 	success, imgOrignal=cap.read()
 	faces = facedetect.detectMultiScale(imgOrignal,1.3,5)
@@ -55,32 +57,34 @@ while True:
 		crop_img=imgOrignal[y:y+h,x:x+h]
 		img=cv2.resize(crop_img, (224,224))
 		img=img.reshape(1, 224, 224, 3)
-		prediction=transfer_mobile_model.predict(img)
+		prediction=model.predict(img)
 		classIndex = np.argmax(prediction)
 
-		cv2.rectangle(imgOrignal,(x,y),(x+w,y+h),(0,255,0),2)
-		cv2.rectangle(imgOrignal, (x,y-40),(x+w, y), (0,255,0),-2)
-		cv2.putText(imgOrignal, labels[classIndex],(x,y-10), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,255,255),1, cv2.LINE_AA)
-
-		if labels[classIndex] == 'not person':
-			continue
-
-		if labels[classIndex] == detected:
+		if classIndex==0:
+			cv2.rectangle(imgOrignal,(x,y),(x+w,y+h),(0,255,0),2)
+			cv2.rectangle(imgOrignal, (x,y-40),(x+w, y), (0,255,0),-2)
+			cv2.putText(imgOrignal, 'Aik Lok',(x,y-10), font, 0.75, (255,255,255),1, cv2.LINE_AA)
 			count += 1
+			if count > 200000000: # TODO: CHANGE TO 20
+				count = 0
+				print('index 0')
+				import sys
+				sys.exit()
+		elif classIndex==1:
+			cv2.rectangle(imgOrignal,(x,y),(x+w,y+h),(0,255,0),2)
+			cv2.rectangle(imgOrignal, (x,y-40),(x+w, y), (0,255,0),-2)
+			cv2.putText(imgOrignal, 'idk',(x,y-10), font, 0.75, (255,255,255),1, cv2.LINE_AA)
 		else:
-			detected = labels[classIndex]
-
-		if count > 20:
-			count = 0
-			print(f"{labels[classIndex]} detected. Enter")
-			import sys
-			sys.exit()
+			cv2.rectangle(imgOrignal,(x,y),(x+w,y+h),(0,255,0),2)
+			cv2.rectangle(imgOrignal, (x,y-40),(x+w, y), (0,255,0),-2)
+			cv2.putText(imgOrignal, 'yew',(x,y-10), font, 0.75, (255,255,255),1, cv2.LINE_AA)
 			
 
 	cv2.imshow("Result",imgOrignal)
 	k=cv2.waitKey(1)
 	if k==ord('q'):
 		break
+
 
 cap.release()
 cv2.destroyAllWindows()
