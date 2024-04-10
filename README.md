@@ -12,7 +12,9 @@ Execution:
 - Train the model based on the list of students given
 - For testing: Run through anchor image of every student in the model and 
 - Compare how accurate both models via
-    - 
+    - Accuracy
+    - Precision
+    - Testing with webcam to simulate real life sceneraio
 - Conclude
 
 For models:
