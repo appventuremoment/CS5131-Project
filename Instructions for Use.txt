@@ -1,0 +1,1 @@
+Just download the python libraries in the first code cell. Place all relevant files in the zip folder together at the same depth. If there are still issues with running the notebook, replace the relevant files with their corresponding absolute file paths, replacing backslashes (\) with forward slashes (/).
